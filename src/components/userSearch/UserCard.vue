@@ -10,7 +10,23 @@
       </template>
       <v-row>
         <v-col md="3">
-          <v-img height="auto" class="pa-3 avatar" :src="user.avatar"></v-img>
+          <v-img
+            :key="imgReload"
+            height="auto"
+            class="pa-3 avatar"
+            :src="user.avatar"
+            @load="loading = false"
+            @error="onError"
+          >
+            <template v-slot:placeholder>
+              <v-row class="ma-0" align="center" justify="center">
+                <v-progress-circular
+                  indeterminate
+                  color="grey lighten-5"
+                ></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
         </v-col>
         <v-col md="9">
           <div class="grey--text px-3 float-md-right">{{ user.email }}</div>
@@ -24,6 +40,7 @@
           <v-card-actions class="px-1">
             <v-btn color="#009688" text @click="reserve">
               Mark as suitable
+              <!-- мутируем массив по клике на Mark as suitable -->
             </v-btn>
           </v-card-actions>
         </v-col>
@@ -38,6 +55,25 @@ export default {
   props: {
     user: Object,
   },
+  data: function () {
+    return {
+      loading: true,
+      imgReload: 0,
+    };
+  },
+  methods: {
+    reserve() {
+      // выделять карточки
+    },
+    onError() {
+      setTimeout(() => {
+        this.imgReload++;
+        /**
+         * рандомное время для загрузки каждой картинки, чтобы запросы не шли одни за другим
+         **/
+      }, Math.random(7000, 20000));
+    },
+  },
 };
 </script>
 
@@ -48,8 +84,6 @@ export default {
   font-size: 24px;
   font-weight: 400;
   line-height: 32px;
-  letter-spacing: 0em;
-  text-align: left;
   min-width: 100px;
 }
 .title {
@@ -57,8 +91,6 @@ export default {
   font-size: 14px;
   font-weight: 700;
   line-height: 20px;
-  letter-spacing: 0em;
-  text-align: left;
   color: @grey;
 }
 .city {
@@ -66,8 +98,6 @@ export default {
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  letter-spacing: 0em;
-  text-align: left;
   color: @grey;
 }
 .avatar {

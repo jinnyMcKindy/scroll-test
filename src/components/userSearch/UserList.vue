@@ -1,5 +1,5 @@
 <template>
-  <v-container class="user-list" mt="3">
+  <v-container class="user-list">
     <user-card v-for="(user, index) in users" :user="user" :key="index" />
   </v-container>
 </template>
@@ -14,8 +14,77 @@ export default {
   },
   data: function () {
     return {
-      users: users.splice(0, 10),
+      total: [...users],
+      users: [...users].splice(0, 10),
+      index: 0,
+      hash: {},
+      matchString: "",
     };
+  },
+  created() {
+    window.addEventListener("scroll", this.scrollFunc);
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.scrollFunc);
+  },
+  watch: {
+    "$route.query.search": {
+      handler: function (matchString) {
+        this.matchString = matchString;
+        if (!matchString) {
+          this.users = [...this.total].splice(0, 10);
+          this.index = 0;
+          return;
+        }
+        if (this.hash[matchString]) {
+          this.users = [...this.hash[matchString].splice(0, 10)];
+        } else {
+          this.search(matchString);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
+  methods: {
+    debounce(method, delay) {
+      clearTimeout(method._tId);
+      method._tId = setTimeout(function () {
+        method();
+      }, delay);
+    },
+    scrollFunc() {
+      this.debounce(this.handleScroll, 1000);
+    },
+    handleScroll() {
+      if (
+        Math.ceil(window.innerHeight) + Math.ceil(window.scrollY) >=
+        document.body.offsetHeight
+      ) {
+        const pickedUsers = this.matchString
+          ? this.hash[this.matchString]
+          : this.total;
+        if (pickedUsers.length === this.users.length) return;
+        this.index += 10;
+        const newUsers = [...pickedUsers].splice(this.index, 10);
+        this.users = [...this.users, ...newUsers];
+      }
+    },
+    search(matchString) {
+      function compare(value) {
+        return value.toLowerCase().indexOf(matchString.toLowerCase()) > -1;
+      }
+      const found = this.total.filter((user) => {
+        return (
+          compare(user.name) ||
+          compare(user.city) ||
+          compare(user.title) ||
+          compare(user.email)
+        );
+      });
+      this.hash[matchString] = [...found];
+      this.users = found.splice(0, 10);
+    },
   },
 };
 </script>
