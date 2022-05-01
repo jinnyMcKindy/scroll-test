@@ -1,17 +1,24 @@
 <template>
-  <div class="home">
-    <UserSearch />
-  </div>
+  <v-container class="wrapper">
+    <search-bar />
+    <user-list />
+  </v-container>
 </template>
 
 <script>
-// @ is an alias to /src
-import UserSearch from "@/components/UserSearch.vue";
-
+import UserList from "@/components/userSearch/UserList.vue";
+import SearchBar from "@/components/userSearch/SearchBar.vue";
 export default {
-  name: "Home",
+  name: "UserSearch",
   components: {
-    UserSearch,
+    UserList,
+    SearchBar,
   },
 };
 </script>
+<style scoped lang="scss">
+.wrapper {
+  width: 700px !important;
+  max-width: 100%;
+}
+</style>
