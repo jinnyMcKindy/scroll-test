@@ -73,7 +73,9 @@ export default {
     },
     search(matchString) {
       function compare(value) {
-        return value.toLowerCase().indexOf(matchString.toLowerCase()) > -1;
+        return (
+          value.toLowerCase().indexOf(matchString.trim().toLowerCase()) > -1
+        );
       }
       const found = this.total.filter((user) => {
         return (
