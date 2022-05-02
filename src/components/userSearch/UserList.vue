@@ -15,14 +15,16 @@ export default {
   data: function () {
     return {
       total: [...users],
-      users: [...users].splice(0, 10),
+      users: [],
       index: 0,
       hash: {},
       matchString: "",
+      step: 20,
     };
   },
   created() {
     window.addEventListener("scroll", this.scrollFunc);
+    this.users = [...users].splice(0, this.step);
   },
   beforeDestroy() {
     window.removeEventListener("scroll", this.scrollFunc);
@@ -32,12 +34,12 @@ export default {
       handler: function (matchString) {
         this.matchString = matchString;
         if (!matchString) {
-          this.users = [...this.total].splice(0, 10);
+          this.users = [...this.total].splice(0, this.step);
           this.index = 0;
           return;
         }
         if (this.hash[matchString]) {
-          this.users = [...this.hash[matchString].splice(0, 10)];
+          this.users = [...this.hash[matchString].splice(0, this.step)];
         } else {
           this.search(matchString);
         }
@@ -58,15 +60,15 @@ export default {
     },
     handleScroll() {
       if (
-        Math.ceil(window.innerHeight) + Math.ceil(window.scrollY) >=
-        document.body.offsetHeight
+        Math.ceil(window.innerHeight * 2) + Math.ceil(window.scrollY) >=
+        document.body.offsetHeight - Math.ceil(window.scrollY)
       ) {
         const target = this.matchString
           ? this.hash[this.matchString]
           : this.total;
         if (target.length === this.users.length) return;
-        this.index += 10;
-        const newUsers = [...target].splice(this.index, 10);
+        this.index += this.step;
+        const newUsers = [...target].splice(this.index, this.step);
         this.users = [...this.users, ...newUsers];
       }
     },
@@ -83,7 +85,7 @@ export default {
         );
       });
       this.hash[matchString] = [...found];
-      this.users = found.splice(0, 10);
+      this.users = found.splice(0, this.step);
     },
   },
 };
