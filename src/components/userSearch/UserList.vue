@@ -15,7 +15,7 @@ export default {
   data: function () {
     return {
       total: [...users],
-      users: [],
+      users: [...users].splice(0, this.step),
       index: 0,
       hash: {},
       matchString: "",
@@ -24,7 +24,6 @@ export default {
   },
   created() {
     window.addEventListener("scroll", this.scrollFunc);
-    this.users = [...users].splice(0, this.step);
   },
   beforeDestroy() {
     window.removeEventListener("scroll", this.scrollFunc);
