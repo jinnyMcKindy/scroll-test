@@ -54,19 +54,19 @@ export default {
       }, delay);
     },
     scrollFunc() {
-      this.debounce(this.handleScroll, 1000);
+      this.debounce(this.handleScroll, 100);
     },
     handleScroll() {
       if (
         Math.ceil(window.innerHeight) + Math.ceil(window.scrollY) >=
         document.body.offsetHeight
       ) {
-        const pickedUsers = this.matchString
+        const target = this.matchString
           ? this.hash[this.matchString]
           : this.total;
-        if (pickedUsers.length === this.users.length) return;
+        if (target.length === this.users.length) return;
         this.index += 10;
-        const newUsers = [...pickedUsers].splice(this.index, 10);
+        const newUsers = [...target].splice(this.index, 10);
         this.users = [...this.users, ...newUsers];
       }
     },
