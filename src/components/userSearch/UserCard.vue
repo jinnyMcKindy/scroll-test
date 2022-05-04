@@ -10,14 +10,13 @@
         <v-col md="3">
           <v-img
             :key="imgReload"
-            height="auto"
+            height="151.02px"
             class="pa-3 avatar"
             :src="user.avatar"
             @load="loading = false"
-            @error="onError"
           >
             <template v-slot:placeholder>
-              <v-row class="ma-0" align="center" justify="center">
+              <v-row class="ma-0 fill-height" align="center" justify="center">
                 <v-progress-circular
                   indeterminate
                   color="grey lighten-5"
