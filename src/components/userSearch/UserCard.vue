@@ -14,6 +14,7 @@
             class="pa-3 avatar"
             :src="user.avatar"
             @load="loading = false"
+            @error="onError"
           >
             <template v-slot:placeholder>
               <v-row class="ma-0 fill-height" align="center" justify="center">
